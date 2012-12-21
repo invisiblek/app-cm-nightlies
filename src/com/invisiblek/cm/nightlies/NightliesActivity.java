@@ -35,7 +35,7 @@ public class NightliesActivity extends SherlockListActivity {
     private LayoutInflater mInflater;
     private SharedPreferences prefs;
     private String currentDevice;
-    private static final String defaultDevice = "galaxys2";
+    private static final String defaultDevice = "d2vzw";
     private static final String TAG = "app-cm-nightlies";
     private ProgressDialog dialog = null;
 	/** Called when the activity is first created. */

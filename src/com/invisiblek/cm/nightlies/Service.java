@@ -21,8 +21,8 @@ import com.invisiblek.cm.nightlies.model.Section;
 
 public class Service {
 
-	String changesUrl = "http://cm10log-app.appspot.com/changelog/?device=";
-	String devicesUrl = "http://cm10log-app.appspot.com/devices/";
+	String changesUrl = "http://10.1.cmxlog.com/changelog/?device=";
+	String devicesUrl = "http://10.1.cmxlog.com/devices/";
 	public ArrayList<String> getDevices() throws Exception {
 		Gson gson = new Gson();
 

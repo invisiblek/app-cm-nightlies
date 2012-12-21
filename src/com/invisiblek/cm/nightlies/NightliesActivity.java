@@ -89,9 +89,9 @@ public class NightliesActivity extends SherlockListActivity {
         			}
         			Section section = (Section)li;
         			row = mInflater.inflate(R.layout.list_section, null);
-        			//ex update-cm-10-20120324-NIGHTLY-crespo-signed.zip
+        			//ex update-cm-10.1-20120324-NIGHTLY-crespo-signed.zip
         			((TextView) row.findViewById(R.id.list_item_section_text)).setText(
-        					"update-cm-10-" + section.getDate() + "-NIGHTLY-" + currentDevice
+        					"update-cm-10.1-" + section.getDate() + "-NIGHTLY-" + currentDevice
         			);
         		}
 

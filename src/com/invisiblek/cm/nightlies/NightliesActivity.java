@@ -31,117 +31,127 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class NightliesActivity extends SherlockListActivity {
-    private LayoutInflater mInflater;
-    private SharedPreferences prefs;
-    private String currentDevice;
-    private static final String defaultDevice = "d2vzw";
-    private static final String TAG = "app-cm-nightlies";
-    private ProgressDialog dialog = null;
+
+	private LayoutInflater mInflater;
+	private SharedPreferences prefs;
+	private String currentDevice;
+	private static final String defaultDevice = "d2vzw";
+	private static final String TAG = "app-cm-nightlies";
+	private ProgressDialog dialog = null;
+
 	/** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.main);
-        mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        // then you use
-        currentDevice = prefs.getString("device", defaultDevice);
-        load(currentDevice);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.main);
+		mInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-    public void load(String device)
-    {
-    	currentDevice = device;
-        new GetChanges().execute(device);
-        getSupportActionBar().setSubtitle(device);
-        setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
-    }
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		currentDevice = prefs.getString("device", defaultDevice);
+		load(currentDevice);
+
+	}
+
+	public void load(String device) {
+		currentDevice = device;
+		new GetChanges().execute(device);
+		getSupportActionBar().setSubtitle(device);
+		setSupportProgressBarIndeterminateVisibility(Boolean.TRUE);
+	}
 
 
-    public void gotDataEvent(ArrayList<ListItem> changes)
-    {
-    	setSupportProgressBarIndeterminateVisibility (Boolean.FALSE);
-    	setListAdapter(new ArrayAdapter<ListItem>(this, R.layout.list_item, changes) {
-        	@Override
-        	public View getView(int position, View convertView, ViewGroup parent) {
-        		View row;
-        		ListItem li = getItem(position);
+	public void gotDataEvent(ArrayList<ListItem> changes) {
+		setSupportProgressBarIndeterminateVisibility (Boolean.FALSE);
+		setListAdapter(new ArrayAdapter<ListItem>(this, R.layout.list_item, changes) {
 
-        		if(!li.isSection()) {
-        			row = convertView;
-        			if(convertView == null || convertView.getId() != R.layout.list_item)
-        			{
-        				row = mInflater.inflate(R.layout.list_item, null);
-        			}
-        			Change change = (Change)li;
-        			((TextView) row.findViewById(R.id.subject)).setText(change.subject);
-            		((TextView) row.findViewById(R.id.project)).setText(
-            				"("+change.project + ")"
-            		);
-        		} else {
-        			row = convertView;
-        			if(convertView == null || convertView.getId() != R.layout.list_section)
-        			{
-        				row = mInflater.inflate(R.layout.list_section, null);
-        			}
-        			Section section = (Section)li;
-        			row = mInflater.inflate(R.layout.list_section, null);
-        			//ex update-cm-10.1-20120324-NIGHTLY-crespo-signed.zip
-        			((TextView) row.findViewById(R.id.list_item_section_text)).setText(
-        					"update-cm-10.1-" + section.getDate() + "-NIGHTLY-" + currentDevice
-        			);
-        		}
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View row;
+				ListItem li = getItem(position);
 
-        		return row;
-        	}
-        });
-    }
+				row = convertView;
+
+				if(!li.isSection()) {
+					if(convertView == null || convertView.getId() != R.layout.list_item) {
+						row = mInflater.inflate(R.layout.list_item, null);
+					}
+
+					Change change = (Change)li;
+
+					((TextView) row.findViewById(R.id.subject)).setText(change.subject);
+					((TextView) row.findViewById(R.id.project)).setText("("+change.project + ")");
+
+				} else {
+					if(convertView == null || convertView.getId() != R.layout.list_section) {
+						row = mInflater.inflate(R.layout.list_section, null);
+					}
+
+					Section section = (Section)li;
+					row = mInflater.inflate(R.layout.list_section, null);
+
+					//ex update-cm-10.1-20120324-NIGHTLY-crespo-signed.zip
+					((TextView) row.findViewById(R.id.list_item_section_text)).setText(
+						"update-cm-10.1-" + section.getDate() + "-NIGHTLY-" + currentDevice);
+				}
+
+				return row;
+			}
+		});
+	}
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		ListItem li = (ListItem)l.getItemAtPosition(position);
 		String url = "";
-		if(!li.isSection())
-		{
+		if(!li.isSection()) {
+
 			Change c = (Change)li;
 			url = "http://review.cyanogenmod.com/" + c.id;
+
 		} else {
+
 			url = "http://download.cyanogenmod.com/?device=" + currentDevice;
 		}
+
 		Intent i = new Intent(Intent.ACTION_VIEW);
 		i.setData(Uri.parse(url));
 		startActivity(i);
+
 	}
-    private class GetChanges extends AsyncTask<String, Void, ArrayList<ListItem>>{
+
+	private class GetChanges extends AsyncTask<String, Void, ArrayList<ListItem>>{
 
 		@Override
 		protected ArrayList<ListItem> doInBackground(String... params) {
 			Service s = new Service();
-			try
-			{
+			try {
 				ArrayList<ListItem> liste = s.getChanges(params[0]);
 				return liste;
-			} catch(Exception e)
-			{
+			}
+
+			catch(Exception e) {
 				Log.d(TAG, "getChanges exception", e);
 			}
+
 			return null;
 		}
-	     protected void onPostExecute(ArrayList<ListItem> result) {
-	    	 if(result == null)
-	    	 {
-	    		 Toast.makeText(NightliesActivity.this,"Problem loading data",1000).show();
-	    		 setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
 
-	    	 } else {
-	    		 NightliesActivity.this.gotDataEvent(result);
-	    	 }
-	     }
+		protected void onPostExecute(ArrayList<ListItem> result) {
+			if(result == null) {
+				Toast.makeText(NightliesActivity.this,"Problem loading data",1000).show();
+				setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
 
-    }
-    private class GetDevices extends AsyncTask<Void, Void, ArrayList<String>> {
+			} else {
+				 NightliesActivity.this.gotDataEvent(result);
+			}
+		}
+
+	}
+	private class GetDevices extends AsyncTask<Void, Void, ArrayList<String>> {
 
 		@Override
 		protected ArrayList<String> doInBackground(Void... params) {
@@ -156,79 +166,74 @@ public class NightliesActivity extends SherlockListActivity {
 			}
 			return null;
 		}
-		protected void onPostExecute(ArrayList<String> result)
-		{
-    	    if(NightliesActivity.this.dialog != null)
-    	    {
-    	    	NightliesActivity.this.dialog.hide();
-    	    	NightliesActivity.this.dialog = null;
 
-    	    }
-	    	 if(result == null)
-	    	 {
-	    		 Toast.makeText(NightliesActivity.this,"Problem loading data",1000).show();
+		protected void onPostExecute(ArrayList<String> result) {
+			if(NightliesActivity.this.dialog != null) {
+				NightliesActivity.this.dialog.hide();
+				NightliesActivity.this.dialog = null;
 
+			}
 
-	    	 } else {
-	    		 NightliesActivity.this.gotDevices(result);
-	    	 }
+			if(result == null) {
+				Toast.makeText(NightliesActivity.this,"Problem loading data",1000).show();
+
+			} else {
+				NightliesActivity.this.gotDevices(result);
+			}
 
 		}
+	}
 
+	public void gotDevices(ArrayList<String> liste) {
 
+		openDeviceSelector(liste);
+	}
 
-    }
-    public void gotDevices(ArrayList<String> liste)
-    {
-
-    	openDeviceSelector(liste);
-
-    }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+
 		getSupportMenuInflater().inflate(R.menu.menu, menu);
 
-	    // Configure the search info and add any event listeners
-
-	    return super.onCreateOptionsMenu(menu);
+		// Configure the search info and add any event listeners
+		return super.onCreateOptionsMenu(menu);
 	}
-	public void openDeviceSelector(final ArrayList<String> items)
-	{
+
+	public void openDeviceSelector(final ArrayList<String> items) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Choose device");
 		builder.setItems(items.toArray(new CharSequence[items.size()]), new DialogInterface.OnClickListener() {
-		    public void onClick(DialogInterface dialog, int item) {
-		    	Editor e = NightliesActivity.this.prefs.edit();
-		    	e.putString("device", items.get(item));
-		    	e.commit();
-		    	NightliesActivity.this.load(items.get(item));
-		    }
+
+			public void onClick(DialogInterface dialog, int item) {
+				Editor e = NightliesActivity.this.prefs.edit();
+				e.putString("device", items.get(item));
+				e.commit();
+				NightliesActivity.this.load(items.get(item));
+			}
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
 
 	}
-	public void getDevices()
-	{
 
-		dialog = ProgressDialog.show(this, "",
-                "Getting device list. \nHold on...", true);
+	public void getDevices() {
+
+		dialog = ProgressDialog.show(this, "", "Getting device list. \nHold on...", true);
 		dialog.show();
 		new GetDevices().execute();
 	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case R.id.menu_pref:
-	        	getDevices();
-	            return true;
-	        case R.id.menu_refresh:
-	        	load(currentDevice);
-	        	return true;
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+			case R.id.menu_pref:
+				getDevices();
+				return true;
+			case R.id.menu_refresh:
+				load(currentDevice);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
-
 }

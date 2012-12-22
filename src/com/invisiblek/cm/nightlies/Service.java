@@ -37,11 +37,11 @@ public class Service {
 		return liste;
 
 	}
+
 	public ArrayList<ListItem> getChanges(String device) throws Exception{
 		String url = changesUrl + device;
 		Gson gson = new Gson();
-		HttpURLConnection connection = 
-				(HttpURLConnection) new URL(url).openConnection();
+		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
 		InputStreamReader reader = new InputStreamReader(connection.getInputStream());
 		Type collectionType = new TypeToken<ArrayList<Change>>(){}.getType();
@@ -50,9 +50,9 @@ public class Service {
 		ArrayList<ListItem> sectionedList = new ArrayList<ListItem>(liste.size());
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
 		Date lastDate = null;
+
 		for (Change change : liste) {
-			if(lastDate == null)
-			{
+			if(lastDate == null) {
 				lastDate = df.parse(change.last_updated);
 				sectionedList.add(new Section(lastDate));
 				sectionedList.add(change);
@@ -63,7 +63,7 @@ public class Service {
 				Date parsedDate = df.parse(change.last_updated);
 				cal2.setTime(parsedDate);
 				boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-				                  cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+					cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
 				if(sameDay) {
 					sectionedList.add(change);
 				} else {
@@ -78,5 +78,4 @@ public class Service {
 
 		return sectionedList;
 	}
-
 }

@@ -7,14 +7,15 @@ import java.util.Locale;
 public class Section implements ListItem {
 	public Date d;
 
-	public boolean isSection()
-	{
+	public boolean isSection() {
 		return true;
 	}
+
 	public String getDate(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.UK);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		return sdf.format(d);
 	}
+
 	public Section (Date d) {
 		this.d = d;
 	}

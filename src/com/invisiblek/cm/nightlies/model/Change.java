@@ -8,5 +8,4 @@ public class Change implements ListItem {
 	public boolean isSection(){
 		return false;
 	}
-
 }

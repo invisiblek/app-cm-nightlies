@@ -62,9 +62,7 @@ public class Service {
 				cal1.setTime(lastDate);
 				Date parsedDate = df.parse(change.last_updated);
 				cal2.setTime(parsedDate);
-				boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-					cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-				if(sameDay) {
+				if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)) {
 					sectionedList.add(change);
 				} else {
 					sectionedList.add(new Section(parsedDate));

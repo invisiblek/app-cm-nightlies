@@ -1,5 +1,6 @@
 # app-cm-nightlies
 This app pulls from http://10.1.cmxlog.com/ and presents it in a mobile friendly ListView. 
+Play store link: https://play.google.com/store/apps/details?id=com.invisiblek.cm.nightlies
 
 ## Requirements
 1. Android 2.3+

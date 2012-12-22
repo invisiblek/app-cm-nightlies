@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.text.SimpleDateFormat;
 
 
@@ -48,7 +49,8 @@ public class Service {
 		ArrayList<Change> liste = gson.fromJson(reader, collectionType);
 
 		ArrayList<ListItem> sectionedList = new ArrayList<ListItem>(liste.size());
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date lastDate = null;
 
 		for (Change change : liste) {

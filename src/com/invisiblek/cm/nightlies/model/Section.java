@@ -12,7 +12,7 @@ public class Section implements ListItem {
 	}
 
 	public String getDate(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEEEEEEE MMMMMMMMMMM dd, yyyy");
 		return sdf.format(d);
 	}
 

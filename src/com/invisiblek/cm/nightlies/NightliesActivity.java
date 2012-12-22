@@ -110,11 +110,11 @@ public class NightliesActivity extends SherlockListActivity {
 		if(!li.isSection()) {
 
 			Change c = (Change)li;
-			url = "http://review.cyanogenmod.com/" + c.id;
+			url = "http://review.cyanogenmod.org/" + c.id;
 
 		} else {
 
-			url = "http://download.cyanogenmod.com/?device=" + currentDevice;
+			url = "http://download.cyanogenmod.org/?device=" + currentDevice;
 		}
 
 		Intent i = new Intent(Intent.ACTION_VIEW);

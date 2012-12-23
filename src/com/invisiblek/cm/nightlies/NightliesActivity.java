@@ -37,7 +37,7 @@ public class NightliesActivity extends SherlockListActivity {
 	private LayoutInflater mInflater;
 	private SharedPreferences prefs;
 	private String currentDevice;
-	private static final String defaultDevice = "d2vzw";
+	private static final String defaultDevice = android.os.Build.DEVICE;
 	private static final String TAG = "app-cm-nightlies";
 	private ProgressDialog dialog = null;
 
@@ -140,7 +140,7 @@ public class NightliesActivity extends SherlockListActivity {
 
 		protected void onPostExecute(ArrayList<ListItem> result) {
 			if(result == null) {
-				Toast.makeText(NightliesActivity.this,"Problem loading data",1000).show();
+				Toast.makeText(NightliesActivity.this,"Problem loading data. Try choosing a device using the wrench in the upper right corner.",1000).show();
 				setSupportProgressBarIndeterminateVisibility(Boolean.FALSE);
 
 			} else {

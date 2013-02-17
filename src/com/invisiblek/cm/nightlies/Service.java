@@ -24,6 +24,23 @@ public class Service {
 
 	String changesUrl = "http://10.1.cmxlog.com/changelog/?device=";
 	String devicesUrl = "http://10.1.cmxlog.com/devices/";
+
+	private boolean isTranslation;
+	private String[] transMatches = new String[] {"translat",
+						      "localiz",
+						      "russian",
+						      "chinese",
+						      "hungarian",
+						      "portug",
+						      "german",
+						      "swedish",
+						      "french",
+						      "czech",
+						      "danish",
+						      "typo",
+						      "capitalization"};
+
+
 	public ArrayList<String> getDevices() throws Exception {
 		Gson gson = new Gson();
 
@@ -39,7 +56,7 @@ public class Service {
 
 	}
 
-	public ArrayList<ListItem> getChanges(String device) throws Exception{
+	public ArrayList<ListItem> getChanges(String device, boolean showTranslations) throws Exception{
 		String url = changesUrl + device;
 		Gson gson = new Gson();
 		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -54,10 +71,26 @@ public class Service {
 		Date lastDate = null;
 
 		for (Change change : liste) {
+			if(!showTranslations) {
+				isTranslation = false;
+				for(int i=0; i < transMatches.length; i++) {
+					if (change.subject.toLowerCase().contains(transMatches[i].toLowerCase())){
+						isTranslation = true;
+						break;
+					}
+				}
+
+				if (isTranslation) {
+					continue;
+				}
+			}
+
 			if(lastDate == null) {
 				lastDate = df.parse(change.last_updated);
+
 				sectionedList.add(new Section(lastDate));
 				sectionedList.add(change);
+
 			} else {
 				Calendar cal1 = Calendar.getInstance();
 				Calendar cal2 = Calendar.getInstance();

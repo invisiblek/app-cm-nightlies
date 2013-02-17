@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class NightliesActivity extends SherlockListActivity {
 	private static final String defaultDevice = android.os.Build.DEVICE;
 	private static final String TAG = "app-cm-nightlies";
 	private ProgressDialog dialog = null;
+	private boolean showTranslations = false;
 
 	/** Called when the activity is first created. */
 
@@ -53,7 +55,6 @@ public class NightliesActivity extends SherlockListActivity {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		currentDevice = prefs.getString("device", defaultDevice);
 		load(currentDevice);
-
 	}
 
 	public void load(String device) {
@@ -127,7 +128,7 @@ public class NightliesActivity extends SherlockListActivity {
 		protected ArrayList<ListItem> doInBackground(String... params) {
 			Service s = new Service();
 			try {
-				ArrayList<ListItem> liste = s.getChanges(params[0]);
+				ArrayList<ListItem> liste = s.getChanges(params[0], showTranslations);
 				return liste;
 			}
 
@@ -226,6 +227,16 @@ public class NightliesActivity extends SherlockListActivity {
 		switch (item.getItemId()) {
 			case R.id.menu_pref:
 				getDevices();
+				return true;
+			case R.id.show_translations:
+				if (showTranslations) {
+					Toast.makeText(NightliesActivity.this,"Hiding Translations...",1000).show();
+					showTranslations = false;
+				} else {
+					Toast.makeText(NightliesActivity.this,"Showing Translations...",1000).show();
+					showTranslations = true;
+				}
+				load(currentDevice);
 				return true;
 			case R.id.menu_refresh:
 				load(currentDevice);

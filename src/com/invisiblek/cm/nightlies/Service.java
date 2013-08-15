@@ -22,8 +22,8 @@ import com.invisiblek.cm.nightlies.model.Section;
 
 public class Service {
 
-	String changesUrl = "http://10.1.cmxlog.com/changelog/?device=";
-	String devicesUrl = "http://10.1.cmxlog.com/devices/";
+	String changesUrl = "http://10.2.cmxlog.com/changelog/?device=";
+	String devicesUrl = "http://10.2.cmxlog.com/devices/";
 
 	private boolean isTranslation;
 	private String[] transMatches = new String[] {"translat",
